@@ -43,27 +43,27 @@ public:
 
     std::ostream &operator<<(std::ostream &out)
     {
-        return out << this->e[0] << ' ' << this->e[1] << ' ' << this->e[2];
+        return out << e[0] << ' ' << e[1] << ' ' << e[2];
     }
 
     vec3d operator+(const vec3d &v)
     {
-        return vec3d(this->e[0] + v.e[0], this->e[1] + v.e[1], this->e[2] + v.e[2]);
+        return vec3d(e[0] + v.e[0], e[1] + v.e[1], e[2] + v.e[2]);
     }
 
     vec3d operator-(const vec3d &v)
     {
-        return vec3d(this->e[0] - v.e[0], this->e[1] - v.e[1], this->e[2] - v.e[2]);
+        return vec3d(e[0] - v.e[0], e[1] - v.e[1], e[2] - v.e[2]);
     }
 
     vec3d operator*(const vec3d &v)
     {
-        return vec3d(this->e[0] * v.e[0], this->e[1] * v.e[1], this->e[2] * v.e[2]);
+        return vec3d(e[0] * v.e[0], e[1] * v.e[1], e[2] * v.e[2]);
     }
 
     vec3d operator*(float t)
     {
-        return vec3d(t * this->e[0], t * this->e[1], t * this->e[2]);
+        return vec3d(t * e[0], t * e[1], t * e[2]);
     }
 
     vec3d operator/(float t)
@@ -73,7 +73,7 @@ public:
 
     float dot(const vec3d &v)
     {
-        return this->e[0] * v.e[0] + this->e[1] * v.e[1] + this->e[2] * v.e[2];
+        return e[0] * v.e[0] + e[1] * v.e[1] + e[2] * v.e[2];
     }
 
     vec3d cross(const vec3d &u, const vec3d &v)
@@ -93,7 +93,7 @@ public:
         return sqrt(length_squared());
     }
 
-    vec3d unit_vector(vec3d v)
+    static vec3d unit_vector(vec3d v)
     {
         return v / v.length();
     }
@@ -103,7 +103,7 @@ public:
 };
 
 // Type aliases for vec3d
-using point3 = vec3d; // 3D point
-using color = vec3d;  // RGB color
+using point3d = vec3d; // 3D point
+using color = vec3d;   // RGB color
 
 #endif
