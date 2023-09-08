@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include "color.h"
+#include "vec3d.h"
+
 // created left->right, top->bottom
 int main()
 {
@@ -16,15 +19,8 @@ int main()
         std::cerr << "Rendering scanline " << image_height - i << " of " << image_height << '\n';
         for (int j = 0; j < image_width; j++)
         {
-            double r = double(i) / (image_width - 1);
-            double g = double(j) / (image_height - 1);
-            float b = 0.25;
-
-            int ir = 255 * r;
-            int ig = 255 * g;
-            int ib = 255 * b;
-
-            std::cout << ir << ' ' << ig << ' ' << ib << '\n';
+            color pixel_color(float(i) / (image_width - 1), float(j) / (image_height - 1), 0.25);
+            write_color(std::cout, pixel_color);
         }
     }
     std::cerr << "Done!\n";
