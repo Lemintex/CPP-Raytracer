@@ -41,14 +41,61 @@ public:
         return *this *= 1 / t;
     }
 
-    float length() const
+    std::ostream &operator<<(std::ostream &out)
     {
-        return sqrt(length_squared());
+        return out << this->e[0] << ' ' << this->e[1] << ' ' << this->e[2];
+    }
+
+    vec3d operator+(const vec3d &v)
+    {
+        return vec3d(this->e[0] + v.e[0], this->e[1] + v.e[1], this->e[2] + v.e[2]);
+    }
+
+    vec3d operator-(const vec3d &v)
+    {
+        return vec3d(this->e[0] - v.e[0], this->e[1] - v.e[1], this->e[2] - v.e[2]);
+    }
+
+    vec3d operator*(const vec3d &v)
+    {
+        return vec3d(this->e[0] * v.e[0], this->e[1] * v.e[1], this->e[2] * v.e[2]);
+    }
+
+    vec3d operator*(float t)
+    {
+        return vec3d(t * this->e[0], t * this->e[1], t * this->e[2]);
+    }
+
+    vec3d operator/(float t)
+    {
+        return *this * (1 / t);
+    }
+
+    float dot(const vec3d &v)
+    {
+        return this->e[0] * v.e[0] + this->e[1] * v.e[1] + this->e[2] * v.e[2];
+    }
+
+    vec3d cross(const vec3d &u, const vec3d &v)
+    {
+        return vec3d(u.e[1] * v.e[2] - u.e[2] * v.e[1],
+                     u.e[2] * v.e[0] - u.e[0] * v.e[2],
+                     u.e[0] * v.e[1] - u.e[1] * v.e[0]);
     }
 
     float length_squared() const
     {
         return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+    }
+
+    float length() const
+    {
+        return sqrt(length_squared());
+    }
+
+    vec3d unit_vector(vec3d v)
+    {
+        return v / v.length();
     }
 
 public:
