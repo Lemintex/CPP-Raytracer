@@ -4,22 +4,29 @@
 #include "ray.h"
 #include "vec3d.h"
 
-bool hitSphere(const vec3d &center, float radius, const ray &r)
+float hit_sphere(const vec3d &center, float radius, const ray &r)
 {
     vec3d oc = r.origin() - center;
     float a = vec3d::dot(r.direction(), r.direction());
     float b = 2.0 * vec3d::dot(oc, r.direction());
     float c = vec3d::dot(oc, oc) - radius * radius;
     float discriminant = b * b - 4 * a * c; // b^2 - 4ac
-    return (discriminant > 0);
+    if (discriminant < 0)
+        return -1.0;
+    else
+        return (-b - sqrt(discriminant)) / (2.0 * a);
 }
 
-color ray_color(const ray &r)
+color ray_color(ray &r)
 {
-    if (hitSphere(vec3d(0, 0, -1), 0.5, r))
-        return color(1, 0, 0);
+    float t = hit_sphere(vec3d(0, 0, -1), 0.5, r);
+    if (t > 0.0)
+    {
+        vec3d N = vec3d::unit_vector(r.at(t) - vec3d(0, 0, -1));
+        return color(N.x() + 1, N.y() + 1, N.z() + 1) / 2.0;
+    }
     vec3d unit_direction = vec3d::unit_vector(r.direction());
-    auto t = 0.5 * (unit_direction.y() + 1.0);
+    t = 0.5 * (unit_direction.y() + 1.0);
     return color(1.0, 1.0, 1.0) * (1 - t) + color(0.5, 0.7, 1.0) * t;
 }
 
