@@ -7,14 +7,14 @@
 float hit_sphere(const vec3d &center, float radius, const ray &r)
 {
     vec3d oc = r.origin() - center;
-    float a = vec3d::dot(r.direction(), r.direction());
-    float b = 2.0 * vec3d::dot(oc, r.direction());
-    float c = vec3d::dot(oc, oc) - radius * radius;
-    float discriminant = b * b - 4 * a * c; // b^2 - 4ac
+    float a = r.direction().length_squared();
+    float b_half = vec3d::dot(oc, r.direction());
+    float c = oc.length_squared() - radius * radius;
+    float discriminant = b_half * b_half - a * c; // b^2 - 4ac = b_half^2 - ac
     if (discriminant < 0)
         return -1.0;
     else
-        return (-b - sqrt(discriminant)) / (2.0 * a);
+        return (-b_half - sqrt(discriminant)) / a;
 }
 
 color ray_color(ray &r)
