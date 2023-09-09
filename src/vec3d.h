@@ -71,9 +71,11 @@ public:
         return *this * (1 / t);
     }
 
-    float dot(const vec3d &v)
+    static float dot(const vec3d &v1, const vec3d &v2)
     {
-        return e[0] * v.e[0] + e[1] * v.e[1] + e[2] * v.e[2];
+        return v1.e[0] * v2.e[0] +
+               v1.e[1] * v2.e[1] +
+               v1.e[2] * v2.e[2];
     }
 
     vec3d cross(const vec3d &u, const vec3d &v)

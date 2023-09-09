@@ -4,8 +4,20 @@
 #include "ray.h"
 #include "vec3d.h"
 
+bool hitSphere(const vec3d &center, float radius, const ray &r)
+{
+    vec3d oc = r.origin() - center;
+    float a = vec3d::dot(r.direction(), r.direction());
+    float b = 2.0 * vec3d::dot(oc, r.direction());
+    float c = vec3d::dot(oc, oc) - radius * radius;
+    float discriminant = b * b - 4 * a * c; // b^2 - 4ac
+    return (discriminant > 0);
+}
+
 color ray_color(const ray &r)
 {
+    if (hitSphere(vec3d(0, 0, -1), 0.5, r))
+        return color(1, 0, 0);
     vec3d unit_direction = vec3d::unit_vector(r.direction());
     auto t = 0.5 * (unit_direction.y() + 1.0);
     return color(1.0, 1.0, 1.0) * (1 - t) + color(0.5, 0.7, 1.0) * t;
@@ -40,7 +52,7 @@ int main()
         {
             float u = float(j) / (image_width - 1);
             float v = float(i) / (image_height - 1);
-            ray r(origin, lower_left_corner + horizontal * u + vertical * v - origin);
+            ray r(origin, lower_left_corner + ((horizontal * u) + (vertical * v) - origin));
             color pixel_color = ray_color(r);
             write_color(std::cout, pixel_color);
         }
