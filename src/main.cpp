@@ -1,32 +1,19 @@
 #include <iostream>
 
+#include "utility.h"
 #include "color.h"
-#include "ray.h"
-#include "vec3d.h"
+#include "surface_list.h"
+#include "sphere.h"
 
-float hit_sphere(const vec3d &center, float radius, const ray &r)
+color ray_color(ray &r, const surface &world)
 {
-    vec3d oc = r.origin() - center;
-    float a = r.direction().length_squared();
-    float b_half = vec3d::dot(oc, r.direction());
-    float c = oc.length_squared() - radius * radius;
-    float discriminant = b_half * b_half - a * c; // b^2 - 4ac = b_half^2 - ac
-    if (discriminant < 0)
-        return -1.0;
-    else
-        return (-b_half - sqrt(discriminant)) / a;
-}
-
-color ray_color(ray &r)
-{
-    float t = hit_sphere(vec3d(0, 0, -1), 0.5, r);
-    if (t > 0.0)
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec))
     {
-        vec3d N = vec3d::unit_vector(r.at(t) - vec3d(0, 0, -1));
-        return color(N.x() + 1, N.y() + 1, N.z() + 1) / 2.0;
+        return (rec.normal + color(1, 1, 1)) / 2;
     }
     vec3d unit_direction = vec3d::unit_vector(r.direction());
-    t = 0.5 * (unit_direction.y() + 1.0);
+    float t = 0.5 * (unit_direction.y() + 1.0);
     return color(1.0, 1.0, 1.0) * (1 - t) + color(0.5, 0.7, 1.0) * t;
 }
 
@@ -37,6 +24,11 @@ int main()
     const float aspect_ratio = 16.0 / 9.0;
     const int image_width = 2160;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
+
+    // world
+    surface_list world;
+    world.add(make_shared<sphere>(point3d(0, 0, -1), 0.5));
+    world.add(make_shared<sphere>(point3d(0, -100.5, -1), 100));
 
     // camera
     float viewport_height = 2.0;
@@ -60,7 +52,7 @@ int main()
             float u = float(j) / (image_width - 1);
             float v = float(i) / (image_height - 1);
             ray r(origin, lower_left_corner + ((horizontal * u) + (vertical * v) - origin));
-            color pixel_color = ray_color(r);
+            color pixel_color = ray_color(r, world);
             write_color(std::cout, pixel_color);
         }
     }
