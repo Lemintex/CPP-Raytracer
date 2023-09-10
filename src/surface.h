@@ -2,6 +2,7 @@
 #define SURFACE_H
 
 #include "ray.h"
+#include "interval.h"
 
 struct hit_record
 {
@@ -20,7 +21,7 @@ struct hit_record
 class surface
 {
 public:
-    virtual bool hit(ray &r, float t_min, float t_max, hit_record &rec) const = 0;
+    virtual bool hit(ray &r, interval ray_t, hit_record &rec) const = 0;
 };
 
 #endif

@@ -7,18 +7,6 @@
 #include "surface_list.h"
 #include "sphere.h"
 
-color ray_color(ray &r, const surface &world)
-{
-    hit_record rec;
-    if (world.hit(r, 0, infinity, rec))
-    {
-        return (rec.normal + color(1, 1, 1)) / 2;
-    }
-    vec3d unit_direction = vec3d::unit_vector(r.direction());
-    float t = 0.5 * (unit_direction.y() + 1.0);
-    return color(1.0, 1.0, 1.0) * (1 - t) + color(0.5, 0.7, 1.0) * t;
-}
-
 // created left->right, top->bottom
 int main()
 {
@@ -54,7 +42,7 @@ int main()
                 float u = float(j + random_float()) / (image_width - 1);
                 float v = float(i + random_float()) / (image_height - 1);
                 ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world);
+                pixel_color += cam.ray_color(r, world, cam.bounce_limit);
             }
 
             write_color(std::cout, pixel_color, samples_per_pixel);

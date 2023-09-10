@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-bool sphere::hit(ray &r, float t_min, float t_max, hit_record &rec) const
+bool sphere::hit(ray &r, interval ray_t, hit_record &rec) const
 {
     vec3d oc = r.origin() - center;
     float a = r.direction().length_squared();
@@ -14,10 +14,10 @@ bool sphere::hit(ray &r, float t_min, float t_max, hit_record &rec) const
     float sqrtd = sqrt(discriminant);
 
     float root = (-b_half - sqrtd) / a;
-    if (root < t_min || t_max < root)
+    if (root < ray_t.min || ray_t.max < root)
     {
         root = (-b_half + sqrtd) / a;
-        if (root < t_min || t_max < root)
+        if (root < ray_t.min || ray_t.max < root)
             return false;
     }
 

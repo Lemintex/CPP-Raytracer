@@ -2,6 +2,7 @@
 #define SURFACE_LIST_H
 
 #include "surface.h"
+#include "interval.h"
 
 #include <memory>
 #include <vector>
@@ -22,7 +23,7 @@ public:
     void add(shared_ptr<surface> object) { objects.push_back(object); }
 
     virtual bool hit(
-        ray &r, float t_min, float t_max, hit_record &rec) const override;
+        ray &r, interval ray_t, hit_record &rec) const override;
 };
 
 #endif
