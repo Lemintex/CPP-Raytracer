@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "utility.h"
+
 using std::sqrt;
 
 class vec3d
@@ -98,6 +100,40 @@ public:
     static vec3d unit_vector(vec3d v)
     {
         return v / v.length();
+    }
+
+    static vec3d random_in_unit_sphere()
+    {
+        while (true)
+        {
+            vec3d p = vec3d::random(-1, 1);
+            if (p.length_squared() < 1)
+                return p;
+        }
+    }
+
+    static vec3d random_unit_vector()
+    {
+        return unit_vector(random_in_unit_sphere());
+    }
+
+    static vec3d random_on_hemisphere(const vec3d &normal)
+    {
+        vec3d on_unit_sphere = random_unit_vector();
+        if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+            return on_unit_sphere;
+        else
+            return -on_unit_sphere;
+    }
+
+    static vec3d random()
+    {
+        return vec3d(random_float(), random_float(), random_float());
+    }
+
+    static vec3d random(float min, float max)
+    {
+        return vec3d(random_float(min, max), random_float(min, max), random_float(min, max));
     }
 
 public:
