@@ -44,9 +44,4 @@ inline float clamp(float x, float min, float max)
     return x;
 }
 
-// common headers
-
-#include "ray.h"
-#include "vec3d.h"
-
 #endif
