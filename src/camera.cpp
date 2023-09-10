@@ -14,6 +14,29 @@ camera::camera()
     lower_left_corner = origin - horizontal / 2 - vertical / 2 - vec3d(0, 0, focal_length);
 };
 
+void camera::render(const surface &world)
+{
+    for (int i = image_height - 1; i >= 0; i--)
+    {
+        for (int j = 0; j < image_width; j++)
+        {
+            float percent = (i * image_width + j) / (float)(image_width * image_height) * 100.0;
+            percent = 100.0 - percent;
+            std::cerr << "\rProgress: " << std::fixed << std::setprecision(2) << percent << "% " << std::flush;
+            color pixel_color(0, 0, 0);
+
+            for (int s = 0; s < samples_per_pixel; s++)
+            {
+                float u = float(j + random_float()) / (image_width - 1);
+                float v = float(i + random_float()) / (image_height - 1);
+                ray r = get_ray(u, v);
+                pixel_color += ray_color(r, world, bounce_limit);
+            }
+
+            write_color(std::cout, pixel_color, samples_per_pixel);
+        }
+    }
+}
 ray camera::get_ray(float u, float v)
 {
     return ray(origin, lower_left_corner + (horizontal * u) + (vertical * v) - origin);

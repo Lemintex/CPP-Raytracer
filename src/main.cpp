@@ -1,5 +1,4 @@
 #include <iostream>
-#include <iomanip>
 
 #include "camera.h"
 #include "utility.h"
@@ -28,25 +27,6 @@ int main()
     std::cout << "P3\n"
               << image_width << " " << image_height << "\n255\n";
 
-    for (int i = image_height - 1; i >= 0; i--)
-    {
-        for (int j = 0; j < image_width; j++)
-        {
-            float percent = (i * image_width + j) / (float)(image_width * image_height) * 100.0;
-            percent = 100.0 - percent;
-            std::cerr << "\rProgress: " << std::fixed << std::setprecision(2) << percent << "% " << std::flush;
-            color pixel_color(0, 0, 0);
-
-            for (int s = 0; s < samples_per_pixel; s++)
-            {
-                float u = float(j + random_float()) / (image_width - 1);
-                float v = float(i + random_float()) / (image_height - 1);
-                ray r = cam.get_ray(u, v);
-                pixel_color += cam.ray_color(r, world, cam.bounce_limit);
-            }
-
-            write_color(std::cout, pixel_color, samples_per_pixel);
-        }
-    }
+    cam.render(world);
     std::cerr << "\nDone!\n";
 }
