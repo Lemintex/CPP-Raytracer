@@ -2,6 +2,7 @@
 #define SPHERE_H
 
 #include "surface.h"
+#include "interval.h"
 // #include "vec3.h"
 
 class sphere : public surface
@@ -15,7 +16,7 @@ public:
     sphere(point3d cen, float r) : center(cen), radius(r){};
 
     virtual bool hit(
-        ray &r, float t_min, float t_max, hit_record &rec) const override;
+        ray &r, interval ray_t, hit_record &rec) const override;
 };
 
 #endif
