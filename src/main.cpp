@@ -25,7 +25,7 @@ int main()
 
     // render image
     std::cout << "P3\n"
-              << image_width << " " << image_height << "\n255\n";
+              << cam.image_width << " " << cam.image_height << "\n255\n";
 
     cam.render(world);
     std::cerr << "\nDone!\n";
