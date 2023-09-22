@@ -4,11 +4,14 @@
 #include "ray.h"
 #include "interval.h"
 
+class material;
+
 struct hit_record
 {
     point3d p;
     vec3d normal;
     float t;
+    material *mat_ptr;
     bool front_face;
 
     inline void set_face_normal(const ray &r, const vec3d &outward_normal)

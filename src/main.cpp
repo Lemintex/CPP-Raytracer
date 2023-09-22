@@ -18,9 +18,10 @@ int main()
 
     camera cam;
 
+auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
     // world
     surface_list world;
-    world.add(make_shared<sphere>(point3d(0, 0, -1), 0.5));
+    world.add(make_shared<sphere>(point3d(0, 0, -1), 0.5, material_ground));
     world.add(make_shared<sphere>(point3d(0, -100.5, -1), 100));
 
     // render image

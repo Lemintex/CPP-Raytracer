@@ -136,6 +136,17 @@ public:
         return vec3d(random_float(min, max), random_float(min, max), random_float(min, max));
     }
 
+    bool near_zero() const {
+        // Return true if the vector is close to zero in all dimensions.
+        auto s = 1e-8;
+        return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
+    }
+
+    static vec3d reflect(vec3d &v, vec3d &n)
+    {
+        vec3d two_n = n * 2;
+        return v - two_n * dot(v, n);
+    }
 public:
     float e[3];
 };

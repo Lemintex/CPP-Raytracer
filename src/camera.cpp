@@ -51,11 +51,11 @@ color camera::ray_color(ray &r, const surface &world, int limit)
     hit_record rec;
     if (world.hit(r, interval(0.001, infinity), rec))
     {
-        vec3d direction = rec.normal + vec3d::random_unit_vector();
-        ray scattered = ray(rec.p, direction);
-        color c = ray_color(scattered, world, limit - 1) * 0.5;
-        return c;
-        return (rec.normal + color(1, 1, 1)) / 2;
+        ray scattered;
+        color attenuation;
+        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+            return attenuation * ray_color(scattered, world, limit - 1);
+        return color(0,0,0);
     }
     vec3d unit_direction = vec3d::unit_vector(r.direction());
     float t = 0.5 * (unit_direction.y() + 1.0);

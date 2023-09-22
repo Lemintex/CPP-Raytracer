@@ -25,6 +25,7 @@ bool sphere::hit(ray &r, interval ray_t, hit_record &rec) const
     rec.p = r.at(rec.t);
     vec3d outward_normal = (rec.p - center) / radius;
     rec.set_face_normal(r, outward_normal);
+    rec.mat_ptr = mat_ptr;
 
     return true;
 }

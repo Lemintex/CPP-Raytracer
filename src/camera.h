@@ -9,10 +9,11 @@
 #include "ray.h"
 #include "utility.h"
 #include "surface.h"
+#include "material.h"
 
 class camera
 {
-private:
+public:
     int samples_per_pixel = 10;
     int bounce_limit = 10;
     int image_width = 2160;
