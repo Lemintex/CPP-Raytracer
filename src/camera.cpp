@@ -1,63 +1,55 @@
 #include "camera.h"
 
-camera::camera()
-{
-    // camera
-    float aspect_ratio = 16.0 / 9.0;
-    float viewport_height = 2.0;
-    float viewport_width = aspect_ratio * viewport_height;
-    float focal_length = 1.0;
-
+camera::camera() {
     origin = vec3d(0, 0, 0);
-    horizontal = vec3d(viewport_width, 0, 0);
-    vertical = vec3d(0, viewport_height, 0);
-    lower_left_corner = origin - horizontal / 2 - vertical / 2 - vec3d(0, 0, focal_length);
-};
+    lower_left_corner = vec3d(-2.0, -1.0, -1.0);
+    horizontal = vec3d(4.0, 0.0, 0.0);
+    vertical = vec3d(0.0, 2.0, 0.0);
+}
 
-void camera::render(const surface &world)
+void camera::render(const surface_list &world)
 {
-    for (int i = image_height - 1; i >= 0; i--)
+    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    for (int j = image_height - 1; j >= 0; --j)
     {
-        for (int j = 0; j < image_width; j++)
+        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+        for (int i = 0; i < image_width; ++i)
         {
-            float percent = (i * image_width + j) / (float)(image_width * image_height) * 100.0;
-            percent = 100.0 - percent;
-            std::cerr << "\rProgress: " << std::fixed << std::setprecision(2) << percent << "% " << std::flush;
-            color pixel_color(0, 0, 0);
-
-            for (int s = 0; s < samples_per_pixel; s++)
+            vec3d color(0, 0, 0);
+            for (int s = 0; s < samples_per_pixel; ++s)
             {
-                float u = float(j + random_float()) / (image_width - 1);
-                float v = float(i + random_float()) / (image_height - 1);
+                float u = (i + drand48()) / (image_width - 1);
+                float v = (j + drand48()) / (image_height - 1);
                 ray r = get_ray(u, v);
-                pixel_color += ray_color(r, world, bounce_limit);
+                color += get_color(r, world, bounce_limit);
             }
-
-            write_color(std::cout, pixel_color, samples_per_pixel);
+            color /= samples_per_pixel;
+            color = vec3d(sqrt(color.x()), sqrt(color.y()), sqrt(color.z()));
+            color.write_color(std::cout, color, samples_per_pixel);
         }
     }
-}
-ray camera::get_ray(float u, float v)
-{
-    return ray(origin, lower_left_corner + (horizontal * u) + (vertical * v) - origin);
+    std::cerr << "\nDone.\n";
 }
 
-color camera::ray_color(ray &r, const surface &world, int limit)
+vec3d camera::get_color(const ray &r, const surface &world, int depth = 0)
 {
-    if (limit <= 0)
-    {
-        return color(0, 0, 0);
-    }
     hit_record rec;
-    if (world.hit(r, interval(0.001, infinity), rec))
+    if (world.hit(r, 0.00001, MAXFLOAT, rec))
     {
-        vec3d direction = rec.normal + vec3d::random_unit_vector();
-        ray scattered = ray(rec.p, direction);
-        color c = ray_color(scattered, world, limit - 1) * 0.5;
-        return c;
-        return (rec.normal + color(1, 1, 1)) / 2;
+        ray scattered;
+        vec3d attenuation;
+        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+        {
+            return attenuation * get_color(scattered, world, depth - 1);
+        }
+        else
+        {
+            return vec3d(0, 0, 0);
+        }
+        vec3d target = rec.p + rec.normal + vec3d::random_in_unit_sphere();
+        return get_color(ray(rec.p, target - rec.p), world) * 0.5;
     }
     vec3d unit_direction = vec3d::unit_vector(r.direction());
     float t = 0.5 * (unit_direction.y() + 1.0);
-    return color(1.0, 1.0, 1.0) * (1 - t) + color(0.5, 0.7, 1.0) * t;
+    return vec3d(1.0, 1.0, 1.0) * (1.0 - t) + vec3d(0.5, 0.7, 1.0) * t;
 }

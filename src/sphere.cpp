@@ -1,30 +1,34 @@
 #include "sphere.h"
 
-bool sphere::hit(ray &r, interval ray_t, hit_record &rec) const
+bool sphere::hit(const ray &r, float t_min, float t_max, hit_record &rec) const
 {
     vec3d oc = r.origin() - center;
-    float a = r.direction().length_squared();
-    float b_half = vec3d::dot(oc, r.direction());
-    float c = oc.length_squared() - radius * radius;
-
-    float discriminant = b_half * b_half - a * c; // b^2 - 4ac = b_half^2 - ac
-
-    if (discriminant < 0)
-        return false;
-    float sqrtd = sqrt(discriminant);
-
-    float root = (-b_half - sqrtd) / a;
-    if (root < ray_t.min || ray_t.max < root)
+    float a = vec3d::dot(r.direction(), r.direction());
+    float b = vec3d::dot(oc, r.direction());
+    float c = vec3d::dot(oc, oc) - radius * radius;
+    float discriminant = b * b - a * c;
+    if (discriminant > 0)
     {
-        root = (-b_half + sqrtd) / a;
-        if (root < ray_t.min || ray_t.max < root)
-            return false;
+        float temp = (-b - sqrt(discriminant)) / a;
+        if (temp < t_max && temp > t_min)
+        {
+            rec.t = temp;
+            rec.p = r.at(rec.t);
+            rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = mat_ptr;
+            return true;
+        }
+
+        temp = (-b + sqrt(discriminant)) / a;
+        if (temp < t_max && temp > t_min)
+        {
+            rec.t = temp;
+            rec.p = r.at(rec.t);
+            rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = mat_ptr;
+            return true;
+        }
     }
 
-    rec.t = root;
-    rec.p = r.at(rec.t);
-    vec3d outward_normal = (rec.p - center) / radius;
-    rec.set_face_normal(r, outward_normal);
-
-    return true;
+    return false;
 }
