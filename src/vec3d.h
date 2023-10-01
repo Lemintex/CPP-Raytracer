@@ -202,4 +202,10 @@ class vec3d
             << static_cast<int>(255.999 * pixel_color.z()) << '\n';
     }
 };
+
+
+// Type aliases for vec3d
+using point3d = vec3d; // 3D point
+using color = vec3d;   // RGB color
+
 #endif
