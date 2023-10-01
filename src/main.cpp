@@ -56,11 +56,11 @@ int main()
     int height = static_cast<int>(width / 16.0 * 9.0);
 
     surface *list[3];
-    material* mat = new metal(vec3d(0.5, 0.5, 0.8));
+    material* mat = new metal(vec3d(0.5, 0.5, 0.8), 0.2);
     list[0] = new sphere(vec3d(0.5, 0, -1), 0.5, mat);
     material* mat2 = new lambertian(vec3d(0.8, 0.3, 0.3));
     list[1] = new sphere(vec3d(0, -101, -2), 100, mat2);
-    material* mat3 = new metal(vec3d(0.7, 0.6, 1));
+    material* mat3 = new metal(vec3d(0.7, 0.6, 1), 0.5);
     list[2] = new sphere(vec3d(-0.5, 0, -1), 0.5, mat3);
 
     surface_list world(list, 3);
