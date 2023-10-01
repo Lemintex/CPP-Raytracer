@@ -18,7 +18,6 @@ bool sphere::hit(const ray &r, float t_min, float t_max, hit_record &rec) const
             rec.mat_ptr = mat_ptr;
             return true;
         }
-
         temp = (-b + sqrt(discriminant)) / a;
         if (temp < t_max && temp > t_min)
         {
@@ -29,6 +28,5 @@ bool sphere::hit(const ray &r, float t_min, float t_max, hit_record &rec) const
             return true;
         }
     }
-
     return false;
 }
