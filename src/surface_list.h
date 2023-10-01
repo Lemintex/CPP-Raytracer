@@ -2,28 +2,16 @@
 #define SURFACE_LIST_H
 
 #include "surface.h"
-#include "interval.h"
-
-#include <memory>
-#include <vector>
-
-using std::make_shared;
-using std::shared_ptr;
 
 class surface_list : public surface
 {
 public:
-    std::vector<shared_ptr<surface>> objects;
-
-public:
     surface_list() {}
-    surface_list(shared_ptr<surface> object) { add(object); }
+    surface_list(surface **l, int n) {list = l; list_size = n;}
+    virtual bool hit(const ray &r, float t_min, float t_max, hit_record &rec) const override;
 
-    void clear() { objects.clear(); }
-    void add(shared_ptr<surface> object) { objects.push_back(object); }
-
-    virtual bool hit(
-        ray &r, interval ray_t, hit_record &rec) const override;
+    surface **list;
+    int list_size;
 };
 
 #endif

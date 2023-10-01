@@ -1,58 +1,46 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "vec3d.h"
 #include "ray.h"
+#include "vec3d.h"
 #include "surface.h"
-
-struct hit_record;
 
 class material
 {
-public:
-    virtual bool scatter(
-        ray &r_in, hit_record &rec, color &attenuation, ray &scattered) const = 0;
+    public:
+        virtual bool scatter(const ray &r_in, const hit_record &rec, vec3d &attenuation, ray &scattered) const = 0;
 };
 
 class lambertian : public material
-{
-public:
-    color albedo;
+    public:
+        lambertian(const vec3d &a) : albedo(a) {}
 
-public:
-    lambertian(const color &a) : albedo(a) {}
+        virtual bool scatter(const ray &r_in, const hit_record &rec, vec3d &attenuation, ray &scattered) const override
+        {
+            vec3d scatter_direction = rec.normal + vec3d::random_unit_vector();
+            scattered = ray(rec.p, scatter_direction);
+            attenuation = albedo;
+            return true;
+        }
 
-    bool scatter(ray &r_in, hit_record &rec, color &attenuation, ray &scattered) const
-    {
-        vec3d scatter_direction = rec.normal + vec3d::random_unit_vector();
-
-        // Catch degenerate scatter direction
-        if (scatter_direction.near_zero())
-            scatter_direction = rec.normal;
-
-        scattered = ray(rec.p, scatter_direction);
-        attenuation = albedo;
-        return true;
-    }
+        vec3d albedo;
 };
 
 class metal : public material
 {
-public:
-    metal(const color &a) : albedo(a) {}
 
-    bool scatter(ray &r_in, hit_record &rec, color &attenuation, ray &scattered)
-        const override
-    {
-        vec3d uv = vec3d::unit_vector(r_in.direction());
-        vec3d reflected = vec3d::reflect(uv, rec.normal);
-        scattered = ray(rec.p, reflected);
-        attenuation = albedo;
-        return true;
-    }
+    public:
+        metal(const vec3d &a, float f) : albedo(a), fuzz(f < 1 ? f : 1) {}
 
-private:
-    color albedo;
+        virtual bool scatter(const ray &r_in, const hit_record &rec, vec3d &attenuation, ray &scattered) const override
+        {
+            vec3d reflected = vec3d::reflect(vec3d::unit_vector(r_in.direction()), rec.normal);
+            scattered = ray(rec.p, reflected + vec3d::random_unit_vector() * fuzz);
+            attenuation = albedo;
+            return (vec3d::dot(scattered.direction(), rec.normal) > 0);
+        }
+
+        vec3d albedo;
+        float fuzz;
 };
-
 #endif

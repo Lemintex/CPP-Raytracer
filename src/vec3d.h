@@ -1,28 +1,39 @@
-#ifndef VEC3D_H
-#define VEC3D_H
+#ifndef VEC3_H
+#define VEC3_H
 
-#include <cmath>
+#include <math.h>
+#include <stdlib.h>
 #include <iostream>
-
-#include "utility.h"
-
-using std::sqrt;
 
 class vec3d
 {
-public:
-    vec3d() : e{0, 0, 0} {}
-    vec3d(float e0, float e1, float e2) : e{e0, e1, e2} {}
+    public:
+    vec3d() {}
+    vec3d(float e0, float e1, float e2)
+    {
+        e[0] = e0;
+        e[1] = e1;
+        e[2] = e2;
+    }
 
-    float x() const { return e[0]; }
-    float y() const { return e[1]; }
-    float z() const { return e[2]; }
+    float e[3];
+    
+    inline float x() const { return e[0]; }
+    inline float y() const { return e[1]; }
+    inline float z() const { return e[2]; }
 
-    vec3d operator-() const { return vec3d(-e[0], -e[1], -e[2]); }
-    float operator[](int i) const { return e[i]; }
-    float &operator[](int i) { return e[i]; }
+    inline float r() const { return e[0]; }
+    inline float g() const { return e[1]; }
+    inline float b() const { return e[2]; }
 
-    vec3d &operator+=(const vec3d &v)
+    inline const vec3d &operator+() const { return *this; }
+    inline vec3d operator-() const { return vec3d(-e[0], -e[1], -e[2]); }
+
+    inline float operator[](int i) const { return e[i]; }
+    inline float &operator[](int i) { return e[i]; }
+
+    // operators with vec3d
+    inline vec3d &operator+=(const vec3d &v)
     {
         e[0] += v.e[0];
         e[1] += v.e[1];
@@ -30,7 +41,48 @@ public:
         return *this;
     }
 
-    vec3d &operator*=(const float t)
+    inline vec3d &operator-=(const vec3d &v)
+    {
+        e[0] -= v.e[0];
+        e[1] -= v.e[1];
+        e[2] -= v.e[2];
+        return *this;
+    }
+
+    inline vec3d &operator*=(const vec3d &v)
+    {
+        e[0] *= v.e[0];
+        e[1] *= v.e[1];
+        e[2] *= v.e[2];
+        return *this;
+    }
+
+    inline vec3d &operator/=(const vec3d &v)
+    {
+        e[0] /= v.e[0];
+        e[1] /= v.e[1];
+        e[2] /= v.e[2];
+        return *this;
+    }
+
+    // operators with float
+    inline vec3d &operator+=(const float t)
+    {
+        e[0] += t;
+        e[1] += t;
+        e[2] += t;
+        return *this;
+    }
+
+    inline vec3d &operator-=(const float t)
+    {
+        e[0] -= t;
+        e[1] -= t;
+        e[2] -= t;
+        return *this;
+    }
+
+    inline vec3d &operator*=(const float t)
     {
         e[0] *= t;
         e[1] *= t;
@@ -38,118 +90,119 @@ public:
         return *this;
     }
 
-    vec3d &operator/=(const float t)
+    inline vec3d &operator/=(const float t)
     {
-        return *this *= 1 / t;
+        float k = 1.0 / t;
+        e[0] *= k;
+        e[1] *= k;
+        e[2] *= k;
+        return *this;
     }
 
-    std::ostream &operator<<(std::ostream &out)
+    inline vec3d operator+(const vec3d &v2) const
     {
-        return out << e[0] << ' ' << e[1] << ' ' << e[2];
+        return vec3d(e[0] + v2.e[0],
+                    e[1] + v2.e[1],
+                    e[2] + v2.e[2]);
     }
 
-    vec3d operator+(const vec3d &v)
+    inline vec3d operator-(const vec3d &v2) const
     {
-        return vec3d(e[0] + v.e[0], e[1] + v.e[1], e[2] + v.e[2]);
+        return vec3d(e[0] - v2.e[0],
+                    e[1] - v2.e[1],
+                    e[2] - v2.e[2]);
     }
 
-    vec3d operator-(const vec3d &v)
+    inline vec3d operator*(const vec3d &v2) const
     {
-        return vec3d(e[0] - v.e[0], e[1] - v.e[1], e[2] - v.e[2]);
+        return vec3d(e[0] * v2.e[0],
+                    e[1] * v2.e[1],
+                    e[2] * v2.e[2]);
     }
 
-    vec3d operator*(const vec3d &v)
+    inline vec3d operator/(const vec3d &v2) const
     {
-        return vec3d(e[0] * v.e[0], e[1] * v.e[1], e[2] * v.e[2]);
+        return vec3d(e[0] / v2.e[0],
+                    e[1] / v2.e[1],
+                    e[2] / v2.e[2]);
     }
 
-    vec3d operator*(float t)
+    // operators with float
+    inline vec3d operator+(const float t) const
     {
-        return vec3d(t * e[0], t * e[1], t * e[2]);
+        return vec3d(e[0] + t,
+                    e[1] + t,
+                    e[2] + t);
     }
 
-    vec3d operator/(float t)
+    inline vec3d operator-(const float t) const
     {
-        return *this * (1 / t);
+        return vec3d(e[0] - t,
+                    e[1] - t,
+                    e[2] - t);
     }
 
-    static float dot(const vec3d &v1, const vec3d &v2)
+    inline vec3d operator*(const float t) const
     {
-        return v1.e[0] * v2.e[0] +
-               v1.e[1] * v2.e[1] +
-               v1.e[2] * v2.e[2];
+        return vec3d(e[0] * t,
+                    e[1] * t,
+                    e[2] * t);
     }
 
-    vec3d cross(const vec3d &u, const vec3d &v)
+    inline vec3d operator/(const float t) const
     {
-        return vec3d(u.e[1] * v.e[2] - u.e[2] * v.e[1],
-                     u.e[2] * v.e[0] - u.e[0] * v.e[2],
-                     u.e[0] * v.e[1] - u.e[1] * v.e[0]);
+        float k = 1.0 / t;
+        return vec3d(e[0] * k,
+                    e[1] * k,
+                    e[2] * k);
     }
 
-    float length_squared() const
+    static vec3d unit_vector(const vec3d &v);
+
+    static vec3d random_unit_vector();
+
+    inline float length() const
     {
-        return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+        return sqrt(e[0] * e[0] +
+                    e[1] * e[1] +
+                    e[2] * e[2]);
+    }
+    
+    static float dot(const vec3d &v1, const vec3d &v2);
+
+    static vec3d cross(const vec3d &v1, const vec3d &v2);
+
+    static vec3d random_in_unit_sphere();
+
+    inline float squared_length() const
+    {
+        return e[0] * e[0] +
+               e[1] * e[1] +
+               e[2] * e[2];
     }
 
-    float length() const
+    static vec3d reflect(const vec3d &v, const vec3d &n);
+
+    inline vec3d linear_to_gamma()
     {
-        return sqrt(length_squared());
+        return vec3d(sqrt(x()), sqrt(y()), sqrt(z()));
     }
 
-    static vec3d unit_vector(vec3d v)
+    static void write_color(std::ostream &out, vec3d pixel_color, int samples_per_pixel)
     {
-        return v / v.length();
-    }
+        float s = 1.0 / samples_per_pixel;
 
-    static vec3d random_in_unit_sphere()
-    {
-        while (true)
-        {
-            vec3d p = vec3d::random(-1, 1);
-            if (p.length_squared() < 1)
-                return p;
-        }
-    }
+        pixel_color /= samples_per_pixel;
 
-    static vec3d random_unit_vector()
-    {
-        return unit_vector(random_in_unit_sphere());
+        pixel_color = pixel_color.linear_to_gamma();
+        
+        // Write the translated [0,255] value of each color component.
+        out << static_cast<int>(255.999 * pixel_color.x()) << ' '
+            << static_cast<int>(255.999 * pixel_color.y()) << ' '
+            << static_cast<int>(255.999 * pixel_color.z()) << '\n';
     }
-
-    static vec3d random_on_hemisphere(const vec3d &normal)
-    {
-        vec3d on_unit_sphere = random_unit_vector();
-        if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
-            return on_unit_sphere;
-        else
-            return -on_unit_sphere;
-    }
-
-    static vec3d random()
-    {
-        return vec3d(random_float(), random_float(), random_float());
-    }
-
-    static vec3d random(float min, float max)
-    {
-        return vec3d(random_float(min, max), random_float(min, max), random_float(min, max));
-    }
-
-    bool near_zero() const {
-        // Return true if the vector is close to zero in all dimensions.
-        auto s = 1e-8;
-        return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
-    }
-
-    static vec3d reflect(vec3d &v, vec3d &n)
-    {
-        vec3d two_n = n * 2;
-        return v - two_n * dot(v, n);
-    }
-public:
-    float e[3];
 };
+
 
 // Type aliases for vec3d
 using point3d = vec3d; // 3D point

@@ -1,14 +1,14 @@
 #include "surface_list.h"
 
-bool surface_list::hit(ray &r, interval ray_t, hit_record &rec) const
+bool surface_list::hit(const ray &r, float t_min, float t_max, hit_record &rec) const
 {
     hit_record temp_rec;
     bool hit_anything = false;
-    float closest_so_far = ray_t.max;
+    float closest_so_far = t_max;
 
-    for (const auto &object : objects)
+    for (int i = 0; i < list_size; i++)
     {
-        if (object->hit(r, interval(ray_t.min, closest_so_far), temp_rec))
+        if (list[i]->hit(r, t_min, closest_so_far, temp_rec))
         {
             hit_anything = true;
             closest_so_far = temp_rec.t;
