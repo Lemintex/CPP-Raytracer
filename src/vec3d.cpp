@@ -47,3 +47,19 @@ vec3d vec3d::reflect(const vec3d &v, const vec3d &n)
 {
     return v - n * 2 * vec3d::dot(v, n);
 }
+
+bool vec3d::refract(const vec3d &uv, const vec3d &n, float etai_over_etat, vec3d &refracted)
+{
+    vec3d unit_v = vec3d::unit_vector(uv);
+    float dt = vec3d::dot(unit_v, n);
+    float discriminant = 1.0 - etai_over_etat * etai_over_etat * (1 - dt * dt);
+    if (discriminant > 0)
+    {
+        refracted = (unit_v - n * dt) * etai_over_etat - n * sqrt(discriminant);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
