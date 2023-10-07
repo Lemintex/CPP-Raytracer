@@ -33,6 +33,10 @@ void camera::render(const surface_list &world)
 
 vec3d camera::get_color(const ray &r, const surface &world, int depth = 0)
 {
+    if (depth <= 0)
+    {
+        return vec3d(0, 0, 0);
+    }
     hit_record rec;
     if (world.hit(r, 0.00001, MAXFLOAT, rec))
     {
