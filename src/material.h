@@ -58,7 +58,7 @@ class dielectric : public material
         vec3d outward_normal;
         vec3d reflected = vec3d::reflect(r_in.direction(), rec.normal);
         float ni_over_nt;
-        attenuation = vec3d(1.0, 1.0, 0.0);
+        attenuation = vec3d(1.0, 1.0, 1.0);
         vec3d refracted;
         if (vec3d::dot(r_in.direction(), rec.normal) > 0)
         {
