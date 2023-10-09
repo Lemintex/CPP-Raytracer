@@ -58,35 +58,50 @@ class dielectric : public material
         vec3d outward_normal;
         vec3d reflected = vec3d::reflect(r_in.direction(), rec.normal);
         float ni_over_nt;
-        attenuation = vec3d(1.0, 1.0, 1.0);
+        attenuation = vec3d(1.0, 1.0, 0.0);
         vec3d refracted;
+        // float reflect_prob;
+        // float cosine;
+
         if (vec3d::dot(r_in.direction(), rec.normal) > 0)
         {
             outward_normal = -rec.normal;
             ni_over_nt = refraction_index;
+            // cosine = refraction_index * vec3d::dot(r_in.direction(), rec.normal) / r_in.direction().length();
         }
         else
         {
             outward_normal = rec.normal;
             ni_over_nt = 1.0 / refraction_index;
+            // cosine = -vec3d::dot(r_in.direction(), rec.normal) / r_in.direction().length();
         }
 
-        if (vec3d::refract(r_in.direction(), outward_normal, ni_over_nt, refracted))
+if (vec3d::refract(r_in.direction(), outward_normal, ni_over_nt, refracted))
         {
             scattered = ray(rec.p, refracted);
         }
         else
         {
             scattered = ray(rec.p, reflected);
-            return false;
         }
-        return true;
-        // attenuation = vec3d(1.0, 1.0, 1.0);
-        // float refraction_ratio = rec.t ? (1.0 / ir) : ir;
+        // if (vec3d::refract(r_in.direction(), outward_normal, ni_over_nt, refracted))
+        // {
+        //     reflect_prob = vec3d::schlick(cosine, refraction_index);
+        // }
+        // else
+        // {
+        //     reflect_prob = 1.0;
+        // }
 
-        // vec3d unit_direction = vec3d::unit_vector(r_in.direction());
-        // vec3d refracted = vec3d::refract(r_in.direction(), rec.normal, refraction_ratio);
+        // if (drand48() < reflect_prob)
+        // {
+        //     scattered = ray(rec.p, reflected);
+        // }
+        // else
+        // {
         //     scattered = ray(rec.p, refracted);
+        // }
+
         return true;
     }
 

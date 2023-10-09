@@ -24,7 +24,6 @@ void camera::render(const surface_list &world)
                 color += get_color(r, world, bounce_limit);
             }
             color /= samples_per_pixel;
-            color = color.linear_to_gamma();
             vec3d::write_color(std::cout, color, samples_per_pixel);
         }
     }
