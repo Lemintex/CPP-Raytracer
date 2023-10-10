@@ -55,7 +55,7 @@ int main()
     int width = 2160;
     int height = static_cast<int>(width / 16.0 * 9.0);
 
-    surface *list[4];
+    surface *list[5];
     material *mat[4];
     mat[0] = new lambertian(vec3d(0.8, 0.3, 0.3));
     mat[1] = new lambertian(vec3d(0.8, 0.8, 0.0));
@@ -66,9 +66,9 @@ int main()
     list[1] = new sphere(vec3d(0, -100.5, -1), 100, mat[1]);
     list[2] = new sphere(vec3d(1, 0, -1), 0.5, mat[2]);
     list[3] = new sphere(vec3d(-1, 0, -1), 0.5, mat[3]);
-    //list[4] = new sphere(vec3d(-1, 0, -1), -0.45, mat[3]);
+    list[4] = new sphere(vec3d(-1, 0, -1), -0.4, mat[3]);
 
-    surface_list world(list, 4);
+    surface_list world(list, 5);
     cam = camera();
 
     vec3d lower_left_corner(-2.0, -1.0, -1.0);

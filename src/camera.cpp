@@ -5,6 +5,7 @@ camera::camera() {
     lower_left_corner = vec3d(-2.0, -1.0, -1.0);
     horizontal = vec3d(4.0, 0.0, 0.0);
     vertical = vec3d(0.0, 2.0, 0.0);
+    samples_per_pixel = 10;
 }
 
 void camera::render(const surface_list &world)
