@@ -17,7 +17,7 @@ void camera::render(const surface_list &world)
         for (int i = 0; i < image_width; ++i)
         {
             vec3d color(0, 0, 0);
-            for (int s = 0; s < samples_per_pixel; ++s)
+            for (int s = 0; s < samples_per_pixel; s++)
             {
                 float u = (i + drand48()) / (image_width - 1);
                 float v = (j + drand48()) / (image_height - 1);
