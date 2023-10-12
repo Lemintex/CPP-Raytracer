@@ -195,7 +195,6 @@ class vec3d
         pixel_color /= samples_per_pixel;
 
         pixel_color = pixel_color.linear_to_gamma();
-        pixel_color = pixel_color.linear_to_gamma();
         
         // Write the translated [0,255] value of each color component.
         out << static_cast<int>(255.999 * pixel_color.x()) << ' '
