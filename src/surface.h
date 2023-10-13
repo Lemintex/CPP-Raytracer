@@ -6,6 +6,8 @@
 
 class material;
 
+class material;
+
 struct hit_record
 {
     float t;

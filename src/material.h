@@ -9,11 +9,9 @@ class material
 {
     public:
         virtual bool scatter(const ray &r_in, const hit_record &rec, vec3d &attenuation, ray &scattered) const = 0;
-
 };
 
 class lambertian : public material
-{
     public:
         lambertian(const vec3d &a) : albedo(a) {}
 
@@ -30,6 +28,7 @@ class lambertian : public material
 
 class metal : public material
 {
+
     public:
         metal(const vec3d &a, float f) : albedo(a), fuzz(f < 1 ? f : 1) {}
 
