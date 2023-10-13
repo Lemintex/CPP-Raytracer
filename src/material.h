@@ -43,4 +43,60 @@ class metal : public material
         vec3d albedo;
         float fuzz;
 };
+
+class dielectric : public material
+{
+    public:
+    dielectric(float ir)
+    {
+        refraction_index = ir;
+    }
+
+    virtual bool scatter(const ray &r_in, const hit_record &rec, vec3d &attenuation, ray &scattered) const override
+    {
+        vec3d outward_normal;
+        vec3d reflected = vec3d::reflect(r_in.direction(), rec.normal);
+        float ni_over_nt;
+        attenuation = vec3d(1.0, 1.0, 1.0);
+        vec3d refracted;
+        float reflect_prob;
+        float cosine;
+
+        if (vec3d::dot(r_in.direction(), rec.normal) > 0)
+        {
+            outward_normal = -rec.normal;
+            ni_over_nt = refraction_index;
+            cosine = refraction_index * vec3d::dot(r_in.direction(), rec.normal) / r_in.direction().length();
+        }
+        else
+        {
+            outward_normal = rec.normal;
+            ni_over_nt = 1.0 / refraction_index;
+            cosine = -vec3d::dot(r_in.direction(), rec.normal) / r_in.direction().length();
+        }
+
+        if (vec3d::refract(r_in.direction(), outward_normal, ni_over_nt, refracted))
+        {
+            reflect_prob = vec3d::schlick(cosine, refraction_index);
+        }
+        else
+        {
+            reflect_prob = 1.0;
+        }
+
+        if (drand48() < reflect_prob)
+        {
+            scattered = ray(rec.p, reflected);
+        }
+        else
+        {
+            scattered = ray(rec.p, refracted);
+        }
+
+        return true;
+    }
+
+    double refraction_index; // Index of Refraction
+};
+
 #endif

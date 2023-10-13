@@ -201,6 +201,10 @@ class vec3d
             << static_cast<int>(255.999 * pixel_color.y()) << ' '
             << static_cast<int>(255.999 * pixel_color.z()) << '\n';
     }
+
+    static bool refract(const vec3d &v, const vec3d &n, float ni_over_nt, vec3d &refracted);
+
+    static float schlick(float cosine, float ref_idx);
 };
 
 

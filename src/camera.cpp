@@ -5,6 +5,7 @@ camera::camera() {
     lower_left_corner = vec3d(-2.0, -1.0, -1.0);
     horizontal = vec3d(4.0, 0.0, 0.0);
     vertical = vec3d(0.0, 2.0, 0.0);
+    samples_per_pixel = 10;
 }
 
 void camera::render(const surface_list &world)
@@ -16,15 +17,13 @@ void camera::render(const surface_list &world)
         for (int i = 0; i < image_width; ++i)
         {
             vec3d color(0, 0, 0);
-            for (int s = 0; s < samples_per_pixel; ++s)
+            for (int s = 0; s < samples_per_pixel; s++)
             {
                 float u = (i + drand48()) / (image_width - 1);
                 float v = (j + drand48()) / (image_height - 1);
                 ray r = get_ray(u, v);
                 color += get_color(r, world, bounce_limit);
             }
-            color /= samples_per_pixel;
-            color = color.linear_to_gamma();
             vec3d::write_color(std::cout, color, samples_per_pixel);
         }
     }
@@ -33,6 +32,10 @@ void camera::render(const surface_list &world)
 
 vec3d camera::get_color(const ray &r, const surface &world, int depth = 0)
 {
+    if (depth <= 0)
+    {
+        return vec3d(0, 0, 0);
+    }
     hit_record rec;
     if (world.hit(r, 0.00001, MAXFLOAT, rec))
     {

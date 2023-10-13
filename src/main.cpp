@@ -50,20 +50,25 @@ vec3d get_color(const ray &r, const surface &world, int depth = 0)
 
 int main()
 {
-    int samples = 10;
+    int samples = 100;
     camera cam;
     int width = 2160;
     int height = static_cast<int>(width / 16.0 * 9.0);
 
-    surface *list[3];
-    material* mat = new metal(vec3d(0.5, 0.5, 0.8), 0.2);
-    list[0] = new sphere(vec3d(0.5, 0, -1), 0.5, mat);
-    material* mat2 = new lambertian(vec3d(0.8, 0.3, 0.3));
-    list[1] = new sphere(vec3d(0, -101, -2), 100, mat2);
-    material* mat3 = new metal(vec3d(0.7, 0.6, 1), 0.5);
-    list[2] = new sphere(vec3d(-0.5, 0, -1), 0.5, mat3);
+    surface *list[5];
+    material *mat[4];
+    mat[0] = new lambertian(vec3d(0.8, 0.3, 0.3));
+    mat[1] = new lambertian(vec3d(0.8, 0.8, 0.0));
+    mat[2] = new metal(vec3d(0.8, 0.6, 0.2), 0.0);
+    mat[3] = new dielectric(1.5);
 
-    surface_list world(list, 3);
+    list[0] = new sphere(vec3d(0, 0, -1), 0.5, mat[0]);
+    list[1] = new sphere(vec3d(0, -100.5, -1), 100, mat[1]);
+    list[2] = new sphere(vec3d(1, 0, -1), 0.5, mat[2]);
+    list[3] = new sphere(vec3d(-1, 0, -1), 0.5, mat[3]);
+    list[4] = new sphere(vec3d(-1, 0, -1), -0.4, mat[3]);
+
+    surface_list world(list, 5);
     cam = camera();
 
     vec3d lower_left_corner(-2.0, -1.0, -1.0);
@@ -71,27 +76,6 @@ int main()
     vec3d vertical(0.0, 2.0, 0.0);
     vec3d origin(0.0, 0.0, 0.0);
 
-    std::cout << "P3\n" << width << " " << height << "\n255\n";
-        for (int i = height - 1; i >= 0; i--)
-        {
-            std::cerr << "\rScanlines remaining: " << i << " " << std::flush;
-            for (int j = 0; j < width; j++)
-            {
-                vec3d color(0, 0, 0);
-                for (int s = 0; s < samples; s++)
-                {
-                    float u = float(j + drand48()) / width;
-                    float v = float(i + drand48()) / height;
-                    // ray r(origin, lower_left_corner + horizontal * u + vertical * v);
-                ray r = cam.get_ray(u, v);
-                    color += get_color(r, world);
-                }
-                color /= samples;
-                color = vec3d(sqrt(color.x()), sqrt(color.y()), sqrt(color.z()));
-                int ir = static_cast<int>(255.999 * color.x());
-                int ig = static_cast<int>(255.999 * color.y());
-                int ib = static_cast<int>(255.999 * color.z());
-                std::cout << ir << " " << ig << " " << ib << "\n";
-            }
-        }   
+
+    cam.render(world);
 }
