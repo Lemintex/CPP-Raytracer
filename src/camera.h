@@ -7,7 +7,7 @@
 #include "surface_list.h"
 #include "material.h"
 
-class camera
+class camera {
 public:
     camera();
     ray get_ray(float u, float v) const
