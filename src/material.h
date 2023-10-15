@@ -12,6 +12,7 @@ class material
 };
 
 class lambertian : public material
+{
     public:
         lambertian(const vec3d &a) : albedo(a) {}
 
@@ -66,7 +67,8 @@ class dielectric : public material
         {
             outward_normal = -rec.normal;
             ni_over_nt = refraction_index;
-            cosine = refraction_index * vec3d::dot(r_in.direction(), rec.normal) / r_in.direction().length();
+            cosine = vec3d::dot(r_in.direction(), rec.normal) / r_in.direction().length();
+            cosine = sqrt(1 - refraction_index * refraction_index * (1 - cosine * cosine));
         }
         else
         {
