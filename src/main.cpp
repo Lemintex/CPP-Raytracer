@@ -51,7 +51,6 @@ vec3d get_color(const ray &r, const surface &world, int depth = 0)
 int main()
 {
     int samples = 100;
-    camera cam;
     int width = 2160;
     int height = static_cast<int>(width / 16.0 * 9.0);
 
@@ -69,13 +68,12 @@ int main()
     list[4] = new sphere(vec3d(-1, 0, -1), -0.4, mat[3]);
 
     surface_list world(list, 5);
-    cam = camera();
+vec3d lookfrom(-2,2,1);
+vec3d lookat(0,0,-1);
+float dist_to_focus = 10.0;
+float aperture = 0.1;
+camera cam = camera(lookfrom, lookat, vec3d(0,1,0), 20, 16.0/9.0, aperture, dist_to_focus);
 
-    vec3d lower_left_corner(-2.0, -1.0, -1.0);
-    vec3d horizontal(4.0, 0.0, 0.0);
-    vec3d vertical(0.0, 2.0, 0.0);
-    vec3d origin(0.0, 0.0, 0.0);
-
-
+    
     cam.render(world);
 }
