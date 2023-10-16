@@ -70,3 +70,13 @@ float vec3d::schlick(float cosine, float ref_idx)
     r0 = r0 * r0;
     return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
+
+vec3d vec3d::random_in_unit_disk()
+{
+    vec3d p;
+    do
+    {
+        p = vec3d(drand48(), drand48(), 0) * 2.0 - vec3d(1, 1, 0);
+    } while (vec3d::dot(p, p) >= 1.0);
+    return p;
+}
