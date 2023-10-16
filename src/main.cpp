@@ -68,11 +68,11 @@ int main()
     list[4] = new sphere(vec3d(-1, 0, -1), -0.4, mat[3]);
 
     surface_list world(list, 5);
-vec3d lookfrom(-2,2,1);
-vec3d lookat(0,0,-1);
-float dist_to_focus = 10.0;
-float aperture = 0.1;
-camera cam = camera(lookfrom, lookat, vec3d(0,1,0), 20, 16.0/9.0, aperture, dist_to_focus);
+    vec3d lookfrom(-2,2,1);
+    vec3d lookat(0,0,-1);
+    float dist_to_focus = 10.0;
+    float aperture = 0.1;
+    camera cam = camera(lookfrom, lookat, vec3d(0,1,0), 20, 16.0/9.0, aperture, dist_to_focus);
 
     
     cam.render(world);
