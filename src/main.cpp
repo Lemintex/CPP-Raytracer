@@ -50,10 +50,6 @@ vec3d get_color(const ray &r, const surface &world, int depth = 0)
 
 int main()
 {
-    int samples = 100;
-    int width = 2160;
-    int height = static_cast<int>(width / 16.0 * 9.0);
-
     surface *list[5];
     material *mat[4];
     mat[0] = new lambertian(vec3d(0.8, 0.3, 0.3));
@@ -71,8 +67,8 @@ int main()
     vec3d lookfrom(-2,2,1);
     vec3d lookat(0,0,-1);
     float dist_to_focus = (lookfrom - lookat).length();
-    float aperture = 0.5;
-    camera cam = camera(lookfrom, lookat, vec3d(0,1,0), 20, 16.0/9.0, aperture, dist_to_focus);
+    float aperture = 0.0;
+    camera cam = camera(lookfrom, lookat, vec3d(0,1,0), 40, 16.0/9.0, aperture, dist_to_focus);
 
     
     cam.render(world);
