@@ -24,7 +24,7 @@ public:
 
     float aspect_ratio = 16.0/9.0;
 
-    int image_width = 2160;
+    int image_width = 1920;
     int image_height = static_cast<int>(image_width / aspect_ratio);
 
     int samples_per_pixel = 10;
