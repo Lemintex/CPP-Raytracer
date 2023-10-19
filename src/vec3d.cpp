@@ -52,10 +52,10 @@ bool vec3d::refract(const vec3d &uv, const vec3d &n, float ni_over_nt, vec3d &re
 {
     vec3d unit_v = vec3d::unit_vector(uv);
     float dt = vec3d::dot(unit_v, n);
-    float discriminant = 1.0 - ni_over_nt * (1 - dt * dt);
+    float discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
     if (discriminant > 0)
     {
-        refracted = (unit_v - n * dt) * ni_over_nt * ni_over_nt - n * sqrt(discriminant);
+        refracted = (unit_v - n * dt) * ni_over_nt - n * sqrt(discriminant);
         return true;
     }
     else
@@ -69,4 +69,14 @@ float vec3d::schlick(float cosine, float ref_idx)
     float r0 = (1 - ref_idx) / (1 + ref_idx);
     r0 = r0 * r0;
     return r0 + (1 - r0) * pow((1 - cosine), 5);
+}
+
+vec3d vec3d::random_in_unit_disk()
+{
+    vec3d p;
+    do
+    {
+        p = vec3d(drand48(), drand48(), 0) * 2.0 - vec3d(1, 1, 0);
+    } while (vec3d::dot(p, p) >= 1.0);
+    return p;
 }

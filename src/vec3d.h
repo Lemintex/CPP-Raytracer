@@ -205,6 +205,8 @@ class vec3d
     static bool refract(const vec3d &v, const vec3d &n, float ni_over_nt, vec3d &refracted);
 
     static float schlick(float cosine, float ref_idx);
+
+    static vec3d random_in_unit_disk();
 };
 
 

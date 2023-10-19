@@ -1,10 +1,17 @@
 #include "camera.h"
 
-camera::camera() {
-    origin = vec3d(0, 0, 0);
-    lower_left_corner = vec3d(-2.0, -1.0, -1.0);
-    horizontal = vec3d(4.0, 0.0, 0.0);
-    vertical = vec3d(0.0, 2.0, 0.0);
+camera::camera(vec3d lookfrom, vec3d lookat, vec3d vup, float vfov, float aspect_ratio, float aperture, float focus_dist) {
+    lens_radius = aperture / 2;
+    float theta = vfov * M_PI / 180;
+    float half_height = tan(theta / 2);
+    float half_width = (16.0 / 9.0) * half_height;
+    origin = lookfrom;
+    w = vec3d::unit_vector(lookfrom - lookat);
+    u = vec3d::unit_vector(vec3d::cross(vup, w));
+    v = vec3d::cross(w, u);
+    lower_left_corner = origin - u * half_width * focus_dist -v * half_height * focus_dist - w * focus_dist;
+    horizontal = u * 2 * half_width * focus_dist;
+    vertical = v * 2 * half_height * focus_dist;
     samples_per_pixel = 10;
 }
 

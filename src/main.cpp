@@ -48,34 +48,53 @@ vec3d get_color(const ray &r, const surface &world, int depth = 0)
     return vec3d(1.0, 1.0, 1.0) * (1.0 - t) + vec3d(0.5, 0.7, 1.0) * t;
 }
 
+surface_list *generateScene()
+{
+   int n = 500;
+    surface **list = new surface*[n+1];
+    list[0] = new sphere(vec3d(0,-1000,0), 1000, new lambertian(vec3d(0.5, 0.5, 0.5)));
+    int i = 1;
+    for (int a = -11; a < 11; a++)
+    {
+        for (int b = -11; b < 11; b++)
+        {
+            float choose_mat = drand48();
+            vec3d center(a + 0.9 * drand48(), 0.2, b + 0.9 * drand48());
+            if ((center - vec3d(4, 0.2, 0)).length() > 0.9)
+            {
+                if (choose_mat < 0.8)
+                {
+                    list[i++] = new sphere(center, 0.2, new lambertian(vec3d(drand48() * drand48(), drand48() * drand48(), drand48() * drand48())));
+                }
+                else if (choose_mat < 0.95)
+                {
+                    list[i++] = new sphere(center, 0.2, new metal(vec3d(0.5 * (1 + drand48()), 0.5 * (1 + drand48()), 0.5 * (1 + drand48())), 0.5 * drand48()));
+                }
+                else
+                {
+                    list[i++] = new sphere(center, 0.2, new dielectric(1.5));
+                }
+            }
+        }
+    }
+
+    list[i++] = new sphere(vec3d(0, 1, 0), 1.0, new dielectric(1.5));
+    list[i++] = new sphere(vec3d(-4, 1, 0), 1.0, new lambertian(vec3d(0.4, 0.2, 0.1)));
+    list[i++] = new sphere(vec3d(4, 1, 0), 1.0, new metal(vec3d(0.7, 0.6, 0.5), 0.0));
+
+    return new surface_list(list, i); 
+}
+
 int main()
 {
-    int samples = 100;
-    camera cam;
-    int width = 2160;
-    int height = static_cast<int>(width / 16.0 * 9.0);
+    surface_list *world = generateScene();
 
-    surface *list[5];
-    material *mat[4];
-    mat[0] = new lambertian(vec3d(0.8, 0.3, 0.3));
-    mat[1] = new lambertian(vec3d(0.8, 0.8, 0.0));
-    mat[2] = new metal(vec3d(0.8, 0.6, 0.2), 0.0);
-    mat[3] = new dielectric(1.5);
+    vec3d lookfrom(13,2,3);
+    vec3d lookat(0,0,0);
+    float dist_to_focus = (lookfrom - lookat).length();
+    float aperture = 0.0;
+    camera cam = camera(lookfrom, lookat, vec3d(0,1,0), 40, 16.0/9.0, aperture, dist_to_focus);
 
-    list[0] = new sphere(vec3d(0, 0, -1), 0.5, mat[0]);
-    list[1] = new sphere(vec3d(0, -100.5, -1), 100, mat[1]);
-    list[2] = new sphere(vec3d(1, 0, -1), 0.5, mat[2]);
-    list[3] = new sphere(vec3d(-1, 0, -1), 0.5, mat[3]);
-    list[4] = new sphere(vec3d(-1, 0, -1), -0.4, mat[3]);
-
-    surface_list world(list, 5);
-    cam = camera();
-
-    vec3d lower_left_corner(-2.0, -1.0, -1.0);
-    vec3d horizontal(4.0, 0.0, 0.0);
-    vec3d vertical(0.0, 2.0, 0.0);
-    vec3d origin(0.0, 0.0, 0.0);
-
-
-    cam.render(world);
+    
+    cam.render(*world);
 }
